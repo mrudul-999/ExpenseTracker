@@ -1,11 +1,23 @@
 package com.mrudul;
 
+import com.mrudul.util.DBConnection;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Date;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
+
+          Connection connection = DBConnection.getConnection();//woah nigg
+//        Rule of thumb:
+//        If a class only contains helper methods and no per-object data, make them static and avoid creating instances.
+
+        if(connection!=null)
+            System.out.println("Connection to DB done!");
+        else System.out.println("Failed to connect");
 
         Expense expense1 = new Expense();
         Expense expense2 = new Expense();
