@@ -1,4 +1,4 @@
-package com.mrudul;
+package com.mrudul.model;
 
 import java.util.Date;
 
