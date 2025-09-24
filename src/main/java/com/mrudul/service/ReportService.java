@@ -10,7 +10,7 @@ import java.sql.SQLException;
 
 public class ReportService {
 
-    double getTotalExpenses() {
+    public double getTotalExpenses() {
         ExpenseDAO expenseDAO = new ExpenseDAO();
         String sql_getTotalExpense = "Select SUM(amount) as total from expense.expenses";
         try {
@@ -20,7 +20,7 @@ public class ReportService {
             double amount = 0;
             if (rs.next())
             {
-                return rs.getDouble("amount");
+                return rs.getDouble("total");
             }
             return amount;
         } catch (SQLException e) {
@@ -29,16 +29,17 @@ public class ReportService {
 
     }
 
-    double getExpensesByCategory(String category)
+    public double getExpensesByCategory(String category)
     {
-        String sql_getExpenseByCategory = "Select SUM(amount) from expense.expenses where category = ?";
+        String sql_getExpenseByCategory = "Select SUM(amount) as total_cat from expense.expenses where category = ?";
         try {
             Connection connection = DBConnection.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql_getExpenseByCategory);
+            preparedStatement.setString(1,category);
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next())
             {
-                return rs.getDouble("amount");
+                return rs.getDouble("total_cat");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
