@@ -1,6 +1,8 @@
 package com.mrudul;
 
 import com.mrudul.dao.ExpenseDAO;
+import com.mrudul.exception.DatabaseOperationException;
+import com.mrudul.exception.ExpenseNotFoundException;
 import com.mrudul.model.Expense;
 import com.mrudul.service.ReportService;
 import com.mrudul.util.DBConnection;
@@ -50,7 +52,12 @@ public class Main {
                     expense.setAmount(Double.parseDouble(scanner.nextLine()));
                     expense.setCategory(scanner.nextLine());
                     expense.setLocalDate(new Date());
-                    expenseDAO.addExpense(expense);
+                    try {
+                        expenseDAO.addExpense(expense);
+                    } catch (DatabaseOperationException e) {
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
                     break;
 
                 case 2:
@@ -58,13 +65,25 @@ public class Main {
                     int id = Integer.parseInt(scanner.nextLine());
 
                     ExpenseDAO expenseDAO1 = new ExpenseDAO();
-                    Expense expense2 = expenseDAO1.getExpenseByID(id);
-                    System.out.println(expense2);
+                    Expense expense2 = null;
+                    try {
+                        expense2 = expenseDAO1.getExpenseByID(id);
+                    } catch (ExpenseNotFoundException e) {
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    //System.out.println(expense2);
                     break;
                 case 3:
                     ExpenseDAO expenseDAO2 = new ExpenseDAO();
                     System.out.println("All expenses are: ");
-                    List<Expense> expenseList = expenseDAO2.getAllExpenses();
+                    List<Expense> expenseList = null;
+                    try {
+                        expenseList = expenseDAO2.getAllExpenses();
+                    } catch (ExpenseNotFoundException e) {
+                        System.out.println(e.getMessage());
+                        e.printStackTrace();
+                    }
 
                     for (Expense e : expenseList) {
                         System.out.println(e);

@@ -1,5 +1,7 @@
 package com.mrudul.dao;
 
+import com.mrudul.exception.DatabaseOperationException;
+import com.mrudul.exception.ExpenseNotFoundException;
 import com.mrudul.model.Expense;
 import com.mrudul.util.DBConnection;
 
@@ -13,8 +15,7 @@ import java.util.List;
 
 public class ExpenseDAO {
 
-    public void addExpense(Expense e)
-    {
+    public void addExpense(Expense e) throws DatabaseOperationException {
         //add
         String sql_add = "Insert into expense.expenses (id,title,amount,category,date) " +
                 "values(?,?,?,?,?)";//ok
@@ -31,12 +32,12 @@ public class ExpenseDAO {
 
 
         } catch (SQLException ex) {
-            throw new RuntimeException(ex);
+            throw new DatabaseOperationException("Failed to add an expense lil bro", ex);
         }
 
     }
 
-    public Expense getExpenseByID(int id)
+    public Expense getExpenseByID(int id) throws ExpenseNotFoundException
     {
         //get
         String sql_getByID = "Select * from expense.expenses where id = ?";
@@ -57,6 +58,8 @@ public class ExpenseDAO {
                 expense.setCategory(rs.getString("category"));
                 expense.setLocalDate(rs.getTimestamp("date"));
             }
+            if (expense == null)
+                throw  new ExpenseNotFoundException("Custom Message:Naruto Says there is no ramen :((");
             return expense;
 
         } catch (SQLException e) {
@@ -64,7 +67,7 @@ public class ExpenseDAO {
         }
     }
 
-    public List<Expense> getAllExpenses()
+    public List<Expense> getAllExpenses() throws ExpenseNotFoundException
     {
         List<Expense> expenseList = new ArrayList<>();
         //getall
@@ -85,6 +88,12 @@ public class ExpenseDAO {
                 expense.setLocalDate(rs.getTimestamp("date"));
                 expenseList.add(expense);
             }
+
+            if (expenseList.isEmpty())
+            {
+                throw new ExpenseNotFoundException("The shop has been robbed");
+            }
+
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
